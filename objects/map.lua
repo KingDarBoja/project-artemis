@@ -52,15 +52,19 @@ function Map:render()
             local tile = self:getTile(col, row)
 
             --- We need to draw each tile sprite based on its value.
-            if tile == 0 then
-                love.graphics.rectangle("line", sx, sy, self.cellSize, self.cellSize)
-            elseif tile == 1 then
-                love.graphics.rectangle("fill", sx, sy, self.cellSize, self.cellSize)
-            else
-                love.graphics.setColor(1, 0, 0, 1) -- Red
-                love.graphics.rectangle("fill", sx, sy, self.cellSize, self.cellSize)
-                love.graphics.setColor(1, 1, 1, 1) -- Reset to white
+            if tile > 0 then
+                love.graphics.draw(TileTextures["grid"], TileQuads["grid"][tile], sx, sy)
             end
+
+            -- if tile == 0 then
+            --     love.graphics.rectangle("line", sx, sy, self.cellSize, self.cellSize)
+            -- elseif tile == 1 then
+            --     love.graphics.rectangle("fill", sx, sy, self.cellSize, self.cellSize)
+            -- else
+            --     love.graphics.setColor(1, 0, 0, 1) -- Red
+            --     love.graphics.rectangle("fill", sx, sy, self.cellSize, self.cellSize)
+            --     love.graphics.setColor(1, 1, 1, 1) -- Reset to white
+            -- end
 
             --- Draw each tile as a rectangle (without fills).
             -- love.graphics.rectangle("line", sx, sy, self.cellSize, self.cellSize)

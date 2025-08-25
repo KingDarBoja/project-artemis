@@ -1,15 +1,18 @@
 require "objects.map"
+require "UI.textures"
 
 local tiles = {
-    0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,1,0,
-    0,0,1,1,0,0,1,0,
-    0,0,1,1,0,0,1,0,
-    0,0,0,0,0,0,0,0,
-    0,0,2,2,2,1,1,0,
+    1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 11, 1, 3, 1,
+    1, 12, 3, 3, 11, 1, 3, 1,
+    1, 12, 3, 3, 11, 1, 3, 1,
+    1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 4, 4, 4, 3, 3, 4,
 }
 
 local grid = Map:new(tiles, 8, 6)
+
+LoadTextures()
 
 --- One-time setup of the game.
 function love.load()
@@ -26,7 +29,7 @@ end
 --- Manage the game state frame-to-frame.
 --- @param dt number Time since the last update in seconds.
 function love.update(dt)
-    
+
 end
 
 --- Draw on the screen every frame.
