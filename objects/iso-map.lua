@@ -13,6 +13,11 @@ IsometricMap = {}
 --  creating new "IsometricMap" objects.
 IsometricMap.__index = IsometricMap
 
+-- Default tile width
+MAP_TILE_WIDTH = 100
+-- Default tile height
+MAP_TILE_HEIGHT = 50
+
 --- Maximum individual tile height for the map.
 MAX_MAP_TILE_HEIGHT = 80
 
@@ -24,8 +29,8 @@ function IsometricMap:new(tiles)
         tiles = tiles,
         rows = #tiles,
         columns = #tiles[1],
-        tileWidth = 100,
-        tileHeight = 50
+        tileWidth = MAP_TILE_WIDTH,
+        tileHeight = MAP_TILE_HEIGHT
     }
 
     setmetatable(this, self)
@@ -33,7 +38,10 @@ function IsometricMap:new(tiles)
     --- Offset the grid drawing based on the window size (centering in the
     -- process).
     this.ox = love.graphics.getWidth() * 0.5 - this.tileWidth * 0.5
-    this.oy = this.tileHeight
+    this.oy = this.tileHeight * 2
+
+    -- this.ox = 0
+    -- this.oy = 0
 
     return this
 end
@@ -42,8 +50,8 @@ end
 function IsometricMap:render()
     --- We start at zero to keep the first grid tile at the (x, y) = (0, 0)
     --  coordinate on our grid.
-    for row = 1, self.rows do
-        for col = 1, self.columns do
+    for row = 0, self.rows - 1 do
+        for col = 0, self.columns - 1 do
             --- sx is size in X axis. Add the offset "ox".
             local sx = self.ox + (col - row) * self.tileWidth * 0.5
             --- sy is size in Y axis. Add the offset "oy".
@@ -60,6 +68,8 @@ function IsometricMap:render()
                 local oz = MAX_MAP_TILE_HEIGHT - tileImage:getHeight()
 
                 love.graphics.draw(TileSprites[tile], sx, sy + oz)
+                love.graphics.printf(string.format('[%d, %d]', col, row), sx, sy + oz * 1.5, MAP_TILE_WIDTH, 'center')
+                -- love.graphics.rectangle('line', sx, sy, MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
             end
         end
     end
@@ -73,10 +83,10 @@ end
 --- @return number # The tile value (0, 1, 2, etc)
 function IsometricMap:getTile(x, y)
     --- Validate if the x and y coordinates are "out of bounds".
-    if x < 1 or y < 1 or x > self.columns or y > self.rows then
+    if x < 0 or y < 0 or x > self.columns - 1 or y > self.rows - 1 then
         return -1
     end
-    return self.tiles[y][x]
+    return self.tiles[y + 1][x + 1]
 end
 
 --- Set the tile value using its coordinates.
@@ -85,9 +95,9 @@ end
 --- @param tileType 1 | 2 | 3 The tile type, in this case, just a set of specific numbers.
 --- @return boolean #
 function IsometricMap:setTile(x, y, tileType)
-    if x < 1 or y < 1 or x > self.columns or y > self.rows then
+    if x < 0 or y < 0 or x > self.columns - 1 or y > self.rows - 1 then
         return false
     end
-    self.tiles[y][x] = tileType
+    self.tiles[y + 1][x + 1] = tileType
     return true
 end
