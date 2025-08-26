@@ -3,6 +3,8 @@
 function love.conf(t)
     t.window.title = 'Project Artemis'
 
+    t.console = true
+
     t.window.width = 1280
     t.window.height = 720
 

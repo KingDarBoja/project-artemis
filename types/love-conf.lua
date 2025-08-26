@@ -21,6 +21,7 @@ local LoveConfigWindows = {}
 --- @field identity string | nil The name of the save directory
 --- @field appendidentity boolean Search files in source directory before save directory.
 --- @field version string The LÖVE version this game was made for.
+--- @field console boolean  Attach a console (Windows only).
 --- @field gammacorrect boolean Enable gamma-correct rendering, when supported by the system.
 --- @field window LoveConfigWindows Common window configurations.
 local LoveConfig = {}
