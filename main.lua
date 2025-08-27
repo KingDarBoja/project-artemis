@@ -14,6 +14,16 @@ require "UI.textures"
 
 --- @type number[][]
 local tiles = {
+  -- {2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+  -- {2, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+  -- {2, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+  -- {2, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+  -- {2, 0, 0, 1, 0, 0, 0, 0, 0, 2},
+  -- {2, 0, 0, 1, 0, 0, 0, 0, 0, 2},
+  -- {2, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+  -- {2, 0, 0, 0, 0, 0, 0, 1, 0, 2},
+  -- {2, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+  -- {2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
   { 14, 23, 23, 23, 23, 23, 23, 23, 23, 13 },
   { 21, 32, 33, 33, 28, 33, 28, 33, 31, 20 },
   { 21, 34, 0,  0,  25, 33, 30, 1,  34, 20 },
@@ -26,12 +36,12 @@ local tiles = {
   { 11, 22, 22, 22, 22, 22, 22, 22, 22, 12 },
 }
 
--- local grid = Map:new(tiles, 8, 6)
-
-local grid = IsometricMap:new(tiles)
-
 -- LoadTextures()
 LoadTileSprites()
+
+--- Create the map after loading the textures!
+-- local gameMap = Map:new(tiles, 8, 6)
+local gameMap = IsometricMap:new(tiles)
 
 --- One-time setup of the game.
 function love.load()
@@ -60,7 +70,7 @@ function love.draw()
     'center'
   )
 
-  local tileX, tileY = ToGridCoordinate(MouseX, MouseY)
+  local tileX, tileY = ToGridCoordinate(gameMap, MouseX, MouseY)
 
   love.graphics.printf(
     string.format('Tile coordinates - (X, Y): (%d, %d)', tileX, tileY),
@@ -70,15 +80,16 @@ function love.draw()
     'center'
   )
 
-  grid:render()
+  gameMap:render()
 end
 
 --- Convert from the mouse screen coordinates into the grid tile coordinates.
+--- @param grid IsometricMap The mouse screen position in the X axis.
 --- @param screenX number The mouse screen position in the X axis.
 --- @param screenY number The mouse screen position in the Y axis.
 --- @return number x # The cartesian X coordinates.
 --- @return number y # The cartesian Y coordinates.
-function ToGridCoordinate(screenX, screenY)
+function ToGridCoordinate(grid, screenX, screenY)
   local i_x = 1
   local i_y = 0.5
   local j_x = -1
@@ -98,13 +109,19 @@ function ToGridCoordinate(screenX, screenY)
   local adjointC = determinant * -c
   local adjointD = determinant * d
 
-  --- Account for the grid offset.
-  local ox = grid.ox
-  local oy = grid.oy
+  --- Account for the screen offset. Counter the offset in the X-axis due to the
+  -- half of the tile width used for the centering.
+  local sx = grid.ox + grid.tileWidth * 0.5
+  local sy = grid.oy
 
-  --- The minus one is to offset the coordinate as our grid started at zero.
-  local x = math.floor((screenX - ox) * adjointD + (screenY - oy) * adjointB) - 1
-  local y = math.floor((screenX - ox) * adjointC + (screenY - oy) * adjointA)
+  --- Account for the grid offset (in quantity of tiles).
+  local offset = {
+    x = 0,
+    y = 0,
+  }
+
+  local x = math.floor((screenX - sx) * adjointD + (screenY - sy) * adjointB + offset.x)
+  local y = math.floor((screenX - sx) * adjointC + (screenY - sy) * adjointA + offset.y)
 
   return x, y
 end
