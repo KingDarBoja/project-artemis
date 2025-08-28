@@ -96,6 +96,11 @@ function IsometricMap:setTileValue(x, y, tileType)
     return true
 end
 
+--- comment
+--- @param x integer
+--- @param y integer
+--- @param newTile MapTile
+--- @return boolean
 function IsometricMap:setTile(x, y, newTile)
     if x < 1 or y < 1 or x > self.rows or y > self.columns then
         return false

@@ -38,6 +38,22 @@ local tiles = FlatExample and {
 --- Create the map after loading the textures!
 local gameMap = IsometricMap:new(tiles)
 
+--- Variable to store the previous "hovered" tile.
+--- @type MapTile
+local prevTile = nil
+
+---
+--- @type integer, integer
+local prevTileX, prevTileY = -1, -1
+
+--- Store the current mouse screen coordinates.
+--- @type integer, integer
+local MouseX, MouseY = nil, nil
+
+--- Store the current grid coordinates.
+--- @type integer, integer
+local TileX, TileY = nil, nil
+
 --- One-time setup of the game.
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -54,8 +70,20 @@ end
 --- @param dt number Time since the last update in seconds.
 function love.update(dt)
   MouseX, MouseY = love.mouse.getPosition()
-
   TileX, TileY = ToGridCoordinate(gameMap, MouseX, MouseY)
+
+  --- Perform the check of the hover state.
+  local currentTile = gameMap:getTile(TileX, TileY)
+  if currentTile ~= prevTile then
+    if prevTile then
+      prevTile:setHighlight()
+      prevTileX, prevTileY = prevTile.pos.row, prevTile.pos.col
+      gameMap:setTile(prevTile.pos.row, prevTile.pos.col, prevTile)
+    end
+
+    currentTile:setHighlight()
+    prevTile = currentTile
+  end
 end
 
 --- Draw on the screen every frame.
@@ -71,15 +99,20 @@ function love.draw()
   )
 
   love.graphics.printf(
-    string.format('Tile coordinates - (X, Y): (%d, %d)', TileX, TileY),
+    string.format('Current tile coordinates - (X, Y): (%d, %d)', TileX, TileY),
     0,
     50,
     love.graphics:getWidth(),
     'center'
   )
 
-  local highlightTile = gameMap:getTile(TileX, TileY)
-  highlightTile:updateValue(1)
+  love.graphics.printf(
+    string.format('Previous tile coordinates - (X, Y): (%d, %d)', prevTileX, prevTileY),
+    0,
+    70,
+    love.graphics:getWidth(),
+    'center'
+  )
 
   gameMap:render()
 end

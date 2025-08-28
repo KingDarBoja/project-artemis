@@ -89,16 +89,30 @@ function MapTile:render()
     local rx, ry = self.tw * 0.5 + self.sx + self.tw * 0.5, self.th * 0.5 + self.sy + (FlatExample and 0 or self.oz)
     local bx, by = self.tw * 0.5 + self.sx, self.th * 0.5 + self.sy + self.th * 0.5 + (FlatExample and 0 or self.oz)
 
-    love.graphics.polygon(self.highlighted and 'fill' or 'line', lx, ly, tx, ty, rx, ry, bx, by)
+    --- If tile is highlighted, set white opacity.
+    if self.highlighted then
+        love.graphics.setColor(1, 1, 1, 0.5)
+        love.graphics.polygon('fill', lx, ly, tx, ty, rx, ry, bx, by)
+    else
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.polygon('line', lx, ly, tx, ty, rx, ry, bx, by)
+    end
+
+    --- Draw the tile edges.
 
     --- Draw the tile vertices.
-
     love.graphics.setColor(1, 0, 0)
     love.graphics.setPointSize(4)
     love.graphics.points(lx, ly, tx, ty, rx, ry, bx, by)
+
+    --- Reset color to white
     love.graphics.setColor(1, 1, 1)
 end
 
 function MapTile:setHighlight()
-    self.highlighted = self.highlighted and false or true
+    if self.highlighted then
+        self.highlighted = false
+    else
+        self.highlighted = true
+    end
 end
