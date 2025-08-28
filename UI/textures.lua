@@ -5,21 +5,9 @@ TileQuads = {
     ["grid"] = nil
 }
 
---- @type love.Image[]
-TileSprites = {}
-
 function LoadTextures()
     TileTextures["grid"] = love.graphics.newImage("assets/textures/tilesheet01.png")
     TileQuads["grid"] = CreateQuads(TileTextures["grid"], 64, 64)
-end
-
-function LoadTileSprites()
-    for i = 0, 34 do
-        local filename = string.format("assets/textures/tilemap/tile-%d.png", i)
-        local newTile = love.graphics.newImage(filename)
-
-        table.insert(TileSprites, newTile)
-    end
 end
 
 --- Compute the texture image to split each "tile" into its own.
@@ -54,4 +42,16 @@ function CreateQuads(texture, tileWidth, tileHeight)
     end
 
     return quads
+end
+
+--- @type love.Image[]
+TileSprites = {}
+
+function LoadTileSprites()
+    for i = 0, 34 do
+        local filename = string.format("assets/textures/tilemap/tile-%d.png", i)
+        local newTile = love.graphics.newImage(filename)
+
+        table.insert(TileSprites, newTile)
+    end
 end
